@@ -7,10 +7,18 @@ module.exports = {
     [
       'component',
       {
-        libraryName: 'element-ui',
+        libraryName: 'hsja-ui',
         styleLibraryName: 'theme-chalk',
       },
       '@babel/plugin-proposal-optional-chaining',
-    ]
+    ],
+    [
+      'component',
+      {
+        libraryName: 'hs-pro',
+        style: true,
+      },
+      'hs-pro',
+    ],
   ],
 }

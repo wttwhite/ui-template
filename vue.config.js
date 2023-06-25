@@ -7,7 +7,7 @@ module.exports = defineConfig({
   lintOnSave: false,
   publicPath:
     process.env.NODE_ENV == 'production'
-      ? getEnvUrl('other', 'nhctkqgl', false) // 函数入参  1.环境目前app,wx  2.上下文(项目名)  3.是否进行鉴权
+      ? getEnvUrl('other', 'context-seat', false) // 函数入参  1.环境目前app,wx  2.上下文(项目名)  3.是否进行鉴权
       : './',
   filenameHashing: true,
   assetsDir: 'selfstatic',
@@ -20,14 +20,6 @@ module.exports = defineConfig({
         target: 'https://192.168.2.20',
         changeOrigin: true,
       },
-      // '/app': {
-      //   target: 'https://192.168.2.20',
-      //   changeOrigin: true,
-      // },
-      // '/app': {
-      //   target: 'https://192.168.2.20',
-      //   changeOrigin: true,
-      // },
       '/devKey': {
         target: 'https://192.168.2.20',
         changeOrigin: true,
@@ -35,12 +27,12 @@ module.exports = defineConfig({
           '/devKey': '',
         },
       },
-      '/app/nhctkqgl': {
-        // target: 'http://192.168.2.139:27557',
+      '/app/context-seat': {
+        // target: 'http://192.168.2.139:27420',// 后端地址
         target: 'https://192.168.2.20',
         changeOrigin: true,
         pathRewrite: {
-          // '/app': '',
+          // '/app': '', // 连后端本地接口，打开这一行，后端接口不带app
         },
       },
     },

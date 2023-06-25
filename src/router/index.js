@@ -1,30 +1,18 @@
 import VueRouter from 'vue-router'
-
-import attendanceManage from '@/views/attendance-manage'
-import attendanceDefinite from '@/views/attendance-definite'
-
+import commonTable from '@/views/common-table'
 const routes = [
   {
     path: '/',
-    redirect: '/attendanceManage',
+    redirect: '/commonTable',
   },
   {
-    path: '/attendanceManage',
-    name: 'attendanceManage',
+    path: '/commonTable',
+    name: 'commonTable',
     meta: {
-      name: '考勤管理',
+      name: '表格示例',
       menu: true,
     },
-    component: attendanceManage,
-  },
-  {
-    path: '/attendanceDefinite',
-    name: 'attendanceDefinite',
-    meta: {
-      name: '考勤明细',
-      menu: true,
-    },
-    component: attendanceDefinite,
+    component: commonTable,
   },
 ]
 

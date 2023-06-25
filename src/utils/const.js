@@ -1,14 +1,5 @@
-export const AbnormalStateList = [
-  {
-    label: '旷班',
-    value: 1,
-  },
-  {
-    label: '迟到早退',
-    value: 2,
-  },
-  {
-    label: '请假',
-    value: 3,
-  },
+export const StatusList = [
+  { id: 0, value: '未学习' },
+  { id: 1, value: '已完成' },
+  { id: 2, value: '进行中' },
 ]

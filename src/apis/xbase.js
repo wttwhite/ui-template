@@ -1,4 +1,4 @@
-import request from './index'
+import request from './http'
 
 // 获取当前用户数据
 export function getCurrentUser() {

@@ -1,7 +1,6 @@
 <template>
   <div :class="['full ovh app-box', isDev && 'has-dev-menu']">
     <hs-app-menu v-if="isDev" :menuList="menuList" />
-
     <router-view />
   </div>
 </template>
@@ -13,18 +12,10 @@ export default {
     return {
       isCollapse: false,
       isDev: process.env.NODE_ENV === 'development',
-      defaultMenu: '',
       menuList: routes.filter((item) => item.meta?.menu),
     }
   },
   mounted() {},
-  watch: {
-    $route: {
-      handler(val) {
-        this.defaultMenu = val.path
-      },
-    },
-  },
   methods: {},
 }
 </script>

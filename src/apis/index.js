@@ -1,48 +1,134 @@
-import arkfun from 'arkfun'
-import { Message } from 'element-ui'
-const { _axios } = arkfun
-const request = _axios({
-  context: 'nhctkqgl', //上下文
-  env: 'app', //服务环境, 目前 app,wx
-  authentication: true, //是否进行鉴权
-  token:
-    process.env.NODE_ENV == 'production'
-      ? null
-      : 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhZG1pbiI6dHJ1ZSwiYXVkIjoiaHNqYS1hcmMtcmVhY3Rvci11c2VyIiwiZXhwIjoxNjg2MjIwMDQyNjI4LCJpYXQiOjE2ODYyMTI4NDI2MjgsImlzcyI6ImhzamEtZGV2IiwianRpIjoiMmJiZTRhZWYtN2M4MC00YTZjLWJhOWItZmZlMTE2NDcyOWNmIiwibmJmIjoxNjg2MjEyODQyNjI4LCJvcmdzIjpbXSwicm9sZXMiOltdLCJzdWIiOiJhcmMtcmVhY3RvciIsInVzZXJJZCI6MCwidXNlcm5hbWUiOiJzeXNhZG1pbiJ9.JGBRHPbo86ncmavg3W894YhxJHzkeeVMOa_bKZQKitk', //开发环境调试的token
-  createOption: {}, //请求实例创建自定义配置
-  callback: (res) => {
-    if (res.data instanceof Blob) {
-      return res
-    }
-    let data = res.data
-    if (data.code !== 0 && data.code !== '0' && data.code !== 200) {
-      Message.warning(data.msg || data.datamessage)
-      return Promise.reject(data.data)
-    } else {
-      return data.data
-    }
-  }, //接口返回自定义处理函数
-  headerOption: {}, //自定义请求头
-  configOptionFun: (config) => {
-    //请求配置自定义配置
-    // config.baseURL =
-    //   process.env.NODE_ENV == 'production' ? config.baseURL : '/nhctkqgl'
-    if (!config.url) return config
-    if (
-      config.url.includes('baseserver') ||
-      config.url.includes('xbase') ||
-      config.url.includes('xmgl') ||
-      config.url.includes('gtree') ||
-      config.url.includes('nhctcontract')
-    ) {
-      config.baseURL = process.env.NODE_ENV == 'production' ? '' : '/devKey'
-    }
+import request from './http'
 
-    if (config.header) {
-      config.headers = { ...config.headers, ...config.header }
-    }
-    return config
-  },
-})
+// 获取表格数据
+export function getPageDataApi(data) {
+  return request({
+    url: `/warn-edu-course/getPageDataApi`,
+    method: 'post',
+    data,
+  })
+}
+// 导出
+export function exportExcel(data) {
+  return request({
+    url: `/check-on-work/exportExcel`,
+    method: 'post',
+    data,
+    responseType: 'blob',
+  })
+}
+// 新增课程
+export function saveWarnEduCourse(data) {
+  return request({
+    url: `/warn-edu-course/saveWarnEduCourse`,
+    method: 'post',
+    data,
+  })
+}
+// 编辑课程 根据ID
+export function updateWarnEduCourse(data) {
+  return request({
+    url: `/warn-edu-course/updateWarnEduCourse`,
+    method: 'post',
+    data,
+  })
+}
+// 获取详情课程 根据ID
+export function getCourseDetail(id) {
+  return request({
+    url: `/warn-edu-course/${id}`,
+    method: 'get',
+  })
+}
 
-export default request
+// 编辑课程文件json根据课程ID和用户id,并修改该用户的课程状态,并新增我的学习记录
+export function updateFileJsonByUserId(data) {
+  return request({
+    url: `/warn-edu-course/updateFileJsonByUserId`,
+    method: 'post',
+    data,
+  })
+}
+// 学习平台
+// 置顶操作
+export function updateStudyPlatformCourseIsTop(data) {
+  return request({
+    url: `/study-platform-course/updateStudyPlatformCourseIsTop`,
+    method: 'post',
+    data,
+  })
+}
+// 下架课程 根据ID
+export function updateStudyPlatformCourseStatus(data) {
+  return request({
+    url: `/study-platform-course/updateStudyPlatformCourseStatus`,
+    method: 'post',
+    data,
+  })
+}
+export function platformCourseDel(id) {
+  return request({
+    url: `/study-platform-course/delete/${id}`,
+    method: 'get',
+  })
+}
+// 完成人员列表
+export function getFinishPersonList(id) {
+  return request({
+    url: `/study-platform-course/getFinishPersonList/${id}`,
+    method: 'get',
+  })
+}
+// 新增课程
+export function saveStudyPlatformCourse(data) {
+  return request({
+    url: `/study-platform-course/saveStudyPlatformCourse`,
+    method: 'post',
+    data,
+  })
+}
+// 编辑课程 根据ID
+export function updateStudyPlatformCourse(data) {
+  return request({
+    url: `/study-platform-course/updateStudyPlatformCourse`,
+    method: 'post',
+    data,
+  })
+}
+export function studyCourseDetail(id) {
+  return request({
+    url: `/study-platform-course/${id}`,
+    method: 'get',
+  })
+}
+// 查询我的学习课程详情 根据课程ID和userId
+export function getStudyCourseByIdAndUserId(data) {
+  return request({
+    url: `/study-platform-course/getStudyCourseByIdAndUserId`,
+    method: 'post',
+    data,
+  })
+}
+export function updateStudyIntroduce(data) {
+  return request({
+    url: `/study-platform-course/updateStudyPlatformCourseIntroduce`,
+    method: 'post',
+    data,
+  })
+}
+
+// 我的学习
+// 我的学习记录列表
+export function myStudyRecordList(data) {
+  return request({
+    url: `/user-study-record/myStudyRecordList`,
+    method: 'post',
+    data,
+  })
+}
+export function studyRecordDel(id) {
+  return request({
+    url: `/user-study-record/delete/${id}`,
+    method: 'get',
+  })
+}

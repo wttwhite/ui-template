@@ -9,7 +9,7 @@
     "mock": "nodemon ./mock/index.js"
   },
   "dependencies": {
-    "arkfun": "latest",
+    "arkfun": "0.0.47",
     "axios": "^0.26.1",
     "core-js": "^3.8.3",
     "normalize.css": "^8.0.1",
@@ -34,7 +34,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.0.3",
     "express": "^4.17.3",
-    "element-ui": "2.15.6",
+    "element-ui": "2.15.8",
     "hsja-utils": "^0.4.3",
     "mockjs": "^1.1.0",
     "nodemon": "^2.0.15",

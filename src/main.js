@@ -5,21 +5,23 @@ import routes from './router'
 import store from '@/store'
 import 'normalize.css'
 import '../public-path.js'
-import ElementUI from 'element-ui'
+import elementUI from 'element-ui'
 import arkfun from 'arkfun'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/style/index.scss'
 import '@/components'
-
 const { handleRoute } = arkfun
 
-Vue.use(ElementUI, {
+Vue.use(elementUI, {
   size: 'small',
 })
 Vue.config.productionTip = false
-
-import { getTreeLabelById } from '@/utils/index'
-Vue.prototype.$getTreeLabelById = getTreeLabelById
+// 表格头样式
+Vue.prototype.$HeaderCellStyle = {
+  color: '#4D4D4D',
+  backgroundColor: '#fafafa',
+  height: '54px',
+}
 
 let instance = null
 let router = null
