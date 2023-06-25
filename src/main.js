@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import App from './App.vue'
 import routes from './router'
-import store from '@/store'
+// import store from '@/store'
 import 'normalize.css'
 import '../public-path.js'
 import elementUI from 'element-ui'
@@ -56,7 +56,7 @@ function render(props) {
   }
   instance = new Vue({
     router,
-    store,
+    // store,
     render: (h) => h(App),
   }).$mount(container ? container.querySelector('#app') : '#app')
   setExampke &&

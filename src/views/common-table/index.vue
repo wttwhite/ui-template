@@ -92,8 +92,7 @@
 
 <script>
 import { getPageDataApi, exportExcel } from '@/apis/index'
-import { downloadFile } from 'hsja-utils'
-import dayjs from 'dayjs'
+// import dayjs from 'dayjs'
 const DefaultSearchForm = () => {
   return {
     pageNo: 1,
@@ -102,7 +101,7 @@ const DefaultSearchForm = () => {
     departmentId: '',
     name: '',
     stationId: '',
-    date: dayjs(new Date()).format('YYYY-MM'),
+    // date: dayjs(new Date()).format('YYYY-MM'),
     abnormalType: '',
   }
 }
@@ -127,9 +126,9 @@ export default {
     async exportClick() {
       const res = await exportExcel({
         ...this.searchForm,
-        date: dayjs(this.searchForm.date).format('YYYY年MM月'),
+        // date: dayjs(this.searchForm.date).format('YYYY年MM月'),
       })
-      downloadFile(res)
+      // downloadFile(res)
     },
     detailClick(row) {
       this.mixinRouterReplace('attendanceDefinite', {
