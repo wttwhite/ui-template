@@ -9,6 +9,17 @@
       label-width="90px"
       @submit.prevent
     >
+      <el-form-item label="年度">
+        <el-date-picker
+          :clearable="false"
+          :editable="false"
+          v-model="searchForm.year"
+          type="year"
+          value-format="yyyy"
+          format="yyyy年"
+        >
+        </el-date-picker>
+      </el-form-item>
       <el-form-item label="姓名">
         <el-input
           v-model="searchForm.name"
@@ -17,26 +28,28 @@
           placeholder="请输入"
         />
       </el-form-item>
-      <el-form-item label="异常状态">
-        <el-select v-model="searchForm.abnormalType" clearable>
-          <el-option
-            v-for="(item, index) in AbnormalStateList"
-            :key="index"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
+      <el-form-item label="单位">
+        <select-company
+          v-model="searchForm.companyId"
+          clearable
+          @change="companyIdChange"
+        />
       </el-form-item>
-      <el-form-item label="年月">
-        <el-date-picker
-          :clearable="false"
-          :editable="false"
-          v-model="searchForm.date"
-          type="month"
-          value-format="yyyy-MM"
-          format="yyyy年MM月"
-        >
-        </el-date-picker>
+      <el-form-item label="部门">
+        <select-department
+          ref="departmentRef"
+          v-model="searchForm.departmentId"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="考核结果">
+        <select-dict-list
+          useCode
+          :widthDeleted="false"
+          v-model="searchForm.examineDictCode"
+          clearable
+          dictCode="assessment-results"
+        />
       </el-form-item>
       <el-form-item class="common-search-btn-box">
         <el-button type="primary" icon="el-icon-search" @click="getDataList(1)">
@@ -52,34 +65,30 @@
       </el-form-item>
     </el-form>
     <section slot="btnBox">
-      <el-button
-        type="primary"
-        @click="importClick"
-        :disabled="!searchForm.date"
-      >
-        导入
-      </el-button>
-      <el-button @click="exportClick">导出</el-button>
+      <el-button type="primary" @click="importClick"> 导入 </el-button>
+      <el-button type="primary" @click="addClick">新增</el-button>
     </section>
     <el-table
       :data="pageData"
       height="100%"
       stripe
       ref="tableRef"
-      :header-cell-style="$HeaderCellStyle"
+      v-loading="tableLoading"
     >
       <el-table-column type="index" label="序号" width="60" />
-      <el-table-column prop="name" label="姓名" />
+      <el-table-column prop="year" label="年度" />
       <el-table-column prop="companyName" label="单位" />
       <el-table-column prop="departmentName" label="部门" />
-      <el-table-column prop="stationName" label="岗位" />
-      <el-table-column prop="date" label="年月" />
-      <el-table-column prop="actualAttendanceDays" label="实际出勤次数" />
-      <el-table-column prop="abnormalDays" label="异常天数" />
-      <el-table-column prop="absenteeismDays" label="旷工天数" />
-      <el-table-column prop="askForLeaveDays" label="请假天数" />
+      <el-table-column prop="name" label="姓名" />
+      <el-table-column prop="examineDictCode" label="考核结果" />
+      <el-table-column label="操作" width="120">
+        <template slot-scope="{ row }">
+          <el-button type="text" @click="detailClick(row)">查看</el-button>
+          <el-button type="text" @click="editClick(row)">编辑</el-button>
+          <el-button type="text" @click="delClick(row)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
-    <!-- <dialog-import ref="dialogImport" /> -->
     <hs-pagination
       slot="footer"
       @refresh="getDataList"
@@ -89,20 +98,16 @@
     />
   </hs-layout>
 </template>
-
 <script>
-import { getPageDataApi, exportExcel } from '@/apis/index'
-// import dayjs from 'dayjs'
 const DefaultSearchForm = () => {
   return {
     pageNo: 1,
     pageSize: 10,
+    year: '',
+    name: '',
     companyId: '',
     departmentId: '',
-    name: '',
-    stationId: '',
-    // date: dayjs(new Date()).format('YYYY-MM'),
-    abnormalType: '',
+    examineDictCode: '',
   }
 }
 export default {
@@ -123,25 +128,40 @@ export default {
     importClick() {
       this.$refs.dialogImport.showDialog()
     },
-    async exportClick() {
-      const res = await exportExcel({
-        ...this.searchForm,
-        // date: dayjs(this.searchForm.date).format('YYYY年MM月'),
+    addClick() {
+      this.$router.replace({
+        name: 'annualAssessmentAdd',
       })
-      // downloadFile(res)
+    },
+    editClick(row) {
+      this.$router.replace({
+        name: 'annualAssessmentAdd',
+        query: {
+          id: row.id,
+        },
+      })
     },
     detailClick(row) {
-      this.mixinRouterReplace('attendanceDefinite', {
-        // 地址栏上写明userId怪怪的，又不想加密，就赋值给id字段
-        id: row.userId,
-        date: this.searchForm.date,
+      this.$router.replace({
+        name: 'annualAssessmentDetail',
+        id: row.id,
       })
     },
-    mixinRouterReplace(name, query) {
-      this.$router.replace({
-        name,
-        query,
+    delClick(row) {
+      this.$confirm(`确认删除吗, 是否继续?`, '确认', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(async () => {
+        await taskBack({
+          id: row.id,
+        })
+        this.$message.success('删除成功')
+        this.getDataList()
       })
+    },
+    companyIdChange(val) {
+      this.$refs.departmentRef.getData(val ? val : '')
     },
     mixinResetDataList(DefaultSearchForm) {
       this.searchForm = { ...DefaultSearchForm }
