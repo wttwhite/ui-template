@@ -28,36 +28,13 @@
           placeholder="请输入"
         />
       </el-form-item>
-      <el-form-item label="单位">
-        <select-company
-          v-model="searchForm.companyId"
-          clearable
-          @change="companyIdChange"
-        />
-      </el-form-item>
-      <el-form-item label="部门">
-        <select-department
-          ref="departmentRef"
-          v-model="searchForm.departmentId"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="考核结果">
-        <select-dict-list
-          useCode
-          :widthDeleted="false"
-          v-model="searchForm.examineDictCode"
-          clearable
-          dictCode="assessment-results"
-        />
-      </el-form-item>
       <el-form-item class="common-search-btn-box">
         <el-button type="primary" icon="el-icon-search" @click="getDataList(1)">
           查询
         </el-button>
         <el-button
           plain
-          @click="mixinResetDataList(DefaultSearchForm)"
+          @click="resetDataList(DefaultSearchForm)"
           icon="el-icon-refresh"
         >
           重置
@@ -74,6 +51,7 @@
       stripe
       ref="tableRef"
       v-loading="tableLoading"
+      :header-cell-style="$HeaderCellStyle"
     >
       <el-table-column type="index" label="序号" width="60" />
       <el-table-column prop="year" label="年度" />
@@ -99,21 +77,20 @@
   </hs-layout>
 </template>
 <script>
+import { getPageDataApi, deleteApi } from '@/apis/index'
 const DefaultSearchForm = () => {
   return {
     pageNo: 1,
     pageSize: 10,
     year: '',
     name: '',
-    companyId: '',
-    departmentId: '',
-    examineDictCode: '',
   }
 }
 export default {
   name: 'common-table',
   data() {
     return {
+      tableLoading: false,
       breadcrumbList: ['普通表格页面'],
       pageTotal: 0,
       pageData: [],
@@ -153,41 +130,36 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
       }).then(async () => {
-        await taskBack({
+        await deleteApi({
           id: row.id,
         })
         this.$message.success('删除成功')
         this.getDataList()
       })
     },
-    companyIdChange(val) {
-      this.$refs.departmentRef.getData(val ? val : '')
-    },
-    mixinResetDataList(DefaultSearchForm) {
+    resetDataList(DefaultSearchForm) {
       this.searchForm = { ...DefaultSearchForm }
       this.getDataList(1)
     },
     searchFormFormat(params) {
-      const { companyId } = params
-      // 级联选择器取最后一个数值
-      params.companyId =
-        companyId && companyId.length ? companyId[companyId.length - 1] : ''
-      params.date = dayjs(params.date).format('YYYY年MM月')
       return params
     },
     async getDataList(pageNo) {
       pageNo && (this.searchForm.pageNo = pageNo)
       let params = { ...this.searchForm }
       this.searchFormFormat && (params = await this.searchFormFormat(params))
-      getPageDataApi(this.pageUrl, this.pageMethod || 'post', params).then(
-        (res) => {
+      this.tableLoading = true
+      getPageDataApi(this.pageUrl, this.pageMethod || 'post', params)
+        .then((res) => {
           this.pageData = res.records || []
           this.pageTotal = res.total || 0
           this.$nextTick(() => {
             this.$refs.tableRef.doLayout()
           })
-        }
-      )
+        })
+        .finally(() => {
+          this.tableLoading = false
+        })
     },
   },
 }
