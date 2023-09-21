@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { getPageDataApi, exportExcel } from '@/apis/index'
+import { getPageDataApi, exportExcel } from '@/apis/common'
 // import dayjs from 'dayjs'
 const DefaultSearchForm = () => {
   return {

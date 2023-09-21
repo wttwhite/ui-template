@@ -11,8 +11,6 @@
     >
       <el-form-item label="年度">
         <el-date-picker
-          :clearable="false"
-          :editable="false"
           v-model="searchForm.year"
           type="year"
           value-format="yyyy"
@@ -29,12 +27,16 @@
         />
       </el-form-item>
       <el-form-item class="common-search-btn-box">
-        <el-button type="primary" icon="el-icon-search" @click="getDataList(1)">
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          @click="getDataListMixin(1)"
+        >
           查询
         </el-button>
         <el-button
           plain
-          @click="resetDataList(DefaultSearchForm)"
+          @click="resetDataListMixin(DefaultSearchForm)"
           icon="el-icon-refresh"
         >
           重置
@@ -69,7 +71,7 @@
     </el-table>
     <hs-pagination
       slot="footer"
-      @refresh="getDataList"
+      @refresh="getDataListMixin"
       :page-no.sync="searchForm.pageNo"
       :page-size.sync="searchForm.pageSize"
       :total="pageTotal"
@@ -77,7 +79,8 @@
   </hs-layout>
 </template>
 <script>
-import { getPageDataApi, deleteApi } from '@/apis/index'
+import { deleteCommonApi } from '@/apis/common'
+import pageMixin from '@/mixins/page-list'
 const DefaultSearchForm = () => {
   return {
     pageNo: 1,
@@ -88,18 +91,18 @@ const DefaultSearchForm = () => {
 }
 export default {
   name: 'common-table',
+  mixins: [pageMixin],
   data() {
     return {
-      tableLoading: false,
       breadcrumbList: ['普通表格页面'],
-      pageTotal: 0,
-      pageData: [],
       searchForm: DefaultSearchForm(),
       DefaultSearchForm: Object.freeze(DefaultSearchForm()),
+      pageUrl: '/aaa',
+      // pageMethod 默认post，如果table接口时get，则需要在data中 pageMethod:'get'
     }
   },
   created() {
-    this.getDataList(1)
+    this.getDataListMixin(1)
   },
   methods: {
     importClick() {
@@ -107,12 +110,12 @@ export default {
     },
     addClick() {
       this.$router.replace({
-        name: 'annualAssessmentAdd',
+        name: 'commonTableAddEdit',
       })
     },
     editClick(row) {
       this.$router.replace({
-        name: 'annualAssessmentAdd',
+        name: 'commonTableAddEdit',
         query: {
           id: row.id,
         },
@@ -120,7 +123,7 @@ export default {
     },
     detailClick(row) {
       this.$router.replace({
-        name: 'annualAssessmentDetail',
+        name: 'commonTableDetail',
         id: row.id,
       })
     },
@@ -130,36 +133,16 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
       }).then(async () => {
-        await deleteApi({
+        await deleteCommonApi({
           id: row.id,
         })
         this.$message.success('删除成功')
-        this.getDataList()
+        this.getDataListMixin()
       })
     },
-    resetDataList(DefaultSearchForm) {
-      this.searchForm = { ...DefaultSearchForm }
-      this.getDataList(1)
-    },
+    // 搜索条件需要处理则在这个函数中处理，不需要则可删除
     searchFormFormat(params) {
       return params
-    },
-    async getDataList(pageNo) {
-      pageNo && (this.searchForm.pageNo = pageNo)
-      let params = { ...this.searchForm }
-      this.searchFormFormat && (params = await this.searchFormFormat(params))
-      this.tableLoading = true
-      getPageDataApi(this.pageUrl, this.pageMethod || 'post', params)
-        .then((res) => {
-          this.pageData = res.records || []
-          this.pageTotal = res.total || 0
-          this.$nextTick(() => {
-            this.$refs.tableRef.doLayout()
-          })
-        })
-        .finally(() => {
-          this.tableLoading = false
-        })
     },
   },
 }

@@ -1,5 +1,5 @@
 <template>
-  <hs-layout-detail>
+  <hs-layout-detail footerBtn>
     <hs-breadcrumb
       slot="page-breadcrumb"
       :list="breadcrumbList"
@@ -26,15 +26,15 @@
         </el-descriptions-item>
       </el-descriptions>
     </el-card>
-    <div class="footer-btn">
+    <div slot="footer">
       <el-button type="plain" @click="cancelClick">取消</el-button>
     </div>
   </hs-layout-detail>
 </template>
 <script>
-// import {getDetail }from '/'
+import { getDetailApi } from '@/apis/demo-table'
 export default {
-  name: 'approval-borrow-detail',
+  name: 'demo-table-detail',
   data() {
     return {
       breadcrumbList: ['年度考核', '详情'],
@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     async getInfo() {
-      const data = await getDetail({ id: this.$route.query.id })
+      const data = await getDetailApi({ id: this.$route.query.id })
       this.descList.forEach((item) => {
         this.$set(this.detailData, item.key, data[item.key] || '')
       })
@@ -61,7 +61,7 @@ export default {
     },
     cancelClick() {
       this.$router.replace({
-        name: 'annualAssessment',
+        name: 'commonTable',
       })
     },
   },
@@ -69,18 +69,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .common-descriptions {
-  //   .el-descriptions-item__label {
-  //     width: 80px !important;
-  //     justify-content: flex-start;
-  //     margin-right: 20px;
-  //   }
   .common-desc-item-text {
     color: rgb(153, 153, 153);
   }
-}
-.footer-btn {
-  margin-top: 16px;
-  display: flex;
-  justify-content: center;
 }
 </style>

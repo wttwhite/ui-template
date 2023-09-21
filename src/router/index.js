@@ -1,5 +1,7 @@
 import VueRouter from 'vue-router'
 import commonTable from '@/views/common-table'
+import commonTableAddEdit from '@/views/common-table/add-edit'
+import commonTableDetail from '@/views/common-table/detail'
 const routes = [
   {
     path: '/',
@@ -13,6 +15,22 @@ const routes = [
       menu: true,
     },
     component: commonTable,
+  },
+  {
+    path: '/commonTableAddEdit',
+    name: 'commonTableAddEdit',
+    meta: {
+      name: '表格示例-新增编辑',
+    },
+    component: commonTableAddEdit,
+  },
+  {
+    path: '/commonTableDetail',
+    name: 'commonTableDetail',
+    meta: {
+      name: '表格示例-详情',
+    },
+    component: commonTableDetail,
   },
 ]
 

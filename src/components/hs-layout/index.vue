@@ -1,5 +1,5 @@
 <template functional>
-  <div class="hs-page-list-box">
+  <div class="hs-page-list-box" v-loading="props.loading">
     <slot name="page-breadcrumb"></slot>
     <div :class="['hs-page-all', !props.hasSidebar && 'hs-all-no-sidebar']">
       <div v-if="props.hasSidebar" class="hs-has-sidebar">
@@ -60,6 +60,10 @@ export default {
     },
     // 默认没有侧边栏，右侧边栏几率比没有的小
     hasSidebar: {
+      type: Boolean,
+      default: false,
+    },
+    loading: {
       type: Boolean,
       default: false,
     },

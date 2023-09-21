@@ -14,3 +14,12 @@ export function getPageDataApi(url, method, data) {
     ...params,
   })
 }
+
+// 删除接口, 就是post
+export function deleteCommonApi(url, data) {
+  return request({
+    url,
+    method: 'post',
+    data,
+  })
+}
