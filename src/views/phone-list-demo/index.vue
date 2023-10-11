@@ -12,10 +12,10 @@
         class="page-list-content"
         @click="detailClick(item)"
       >
-        <div class="title">{{ item.companyName }}</div>
+        <div class="title">{{ item.sealTypeName }}</div>
         <section class="content-box">
           <div
-            v-for="obj in cardList"
+            v-for="obj in listProps"
             :key="obj.key"
             :class="[
               'single-obj',
@@ -36,9 +36,10 @@
   </section>
 </template>
 <script>
-import canteenManageApi from '@/apis/canteenmanage'
+import sealManageApi from '@/apis/seal-manage'
+import { ListProps } from './const'
 export default {
-  name: 'dinner-list',
+  name: 'seal-list',
   data() {
     return {
       loading: false,
@@ -49,42 +50,7 @@ export default {
         pageSize: 10,
       },
       list: [],
-      cardList: [
-        {
-          label: '就餐时间',
-          key: 'diningDate',
-          span: 2,
-        },
-        {
-          label: '就餐时间',
-          key: 'diningDate',
-          span: 2,
-        },
-        {
-          label: '部门名称',
-          key: 'departmentName',
-          span: 2,
-        },
-        {
-          label: '就餐时间',
-          key: 'diningDate',
-          span: 2,
-        },
-        {
-          label: '就餐时间',
-          key: 'diningDate',
-        },
-        {
-          label: '公司名称',
-          key: 'companyName',
-        },
-        {
-          label: '公司名称',
-          key: 'companyName',
-          span: 0.5,
-          type: 'textarea',
-        },
-      ],
+      listProps: Object.freeze(ListProps),
     }
   },
   methods: {
@@ -93,15 +59,16 @@ export default {
     },
     detailClick(item) {
       this.$router.push({
-        name: 'reserveDinnerDetail',
+        name: 'sealManageDetail',
         query: {
-          id: item.companyId,
+          id: item.id,
+          applyType: item.applyType,
         },
       })
     },
     // 获取列表
     getList() {
-      canteenManageApi.queryCollectByPage(
+      sealManageApi.queryByPage(
         {
           success: (res) => {
             this.list.push(...res.data.records)

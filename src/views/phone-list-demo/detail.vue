@@ -1,54 +1,30 @@
 <template>
   <section class="page-container">
     <van-cell-group>
-      <van-cell title="单元格" value="内容" />
-      <!-- <van-cell title="单元格" value="内容" label="描述信息" /> -->
+      <van-cell
+        v-for="(item, index) in detailProps"
+        :key="index"
+        :title="item.label"
+        :value="
+          item.span === 0.5 ? '' : $valueFormatEmpty(detailData[item.key])
+        "
+        :label="
+          item.span === 0.5 ? $valueFormatEmpty(detailData[item.key]) : ''
+        "
+      />
+      <files-list :ids="detailData.fileIds" />
     </van-cell-group>
   </section>
 </template>
 <script>
-import canteenManageApi from '@/apis/canteenmanage'
+import sealManageApi from '@/apis/seal-manage'
+import { DetailProps } from './const'
 export default {
-  name: 'dinner-list',
+  name: 'seal-detail',
   data() {
     return {
       detailData: {},
-      cardList: [
-        {
-          label: '就餐时间',
-          key: 'diningDate',
-          span: 2,
-        },
-        {
-          label: '就餐时间',
-          key: 'diningDate',
-          span: 2,
-        },
-        {
-          label: '部门名称',
-          key: 'departmentName',
-          span: 2,
-        },
-        {
-          label: '就餐时间',
-          key: 'diningDate',
-          span: 2,
-        },
-        {
-          label: '就餐时间',
-          key: 'diningDate',
-        },
-        {
-          label: '公司名称',
-          key: 'companyName',
-        },
-        {
-          label: '公司名称',
-          key: 'companyName',
-          span: 0.5,
-          type: 'textarea',
-        },
-      ],
+      detailProps: [...DetailProps],
     }
   },
   created() {
@@ -56,10 +32,10 @@ export default {
   },
   methods: {
     getDetail() {
-      canteenManageApi.getCollectById(
+      sealManageApi.getDetailById(
         {
           success: (res) => {
-            console.log('res', res)
+            this.detailData = res.data
           },
           error: (err) => {
             this.$notify({ message: err })
